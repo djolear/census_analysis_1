@@ -1,0 +1,66 @@
+---
+brftitle: "tidycensus"
+author: "Daniel O'Leary"
+date: "5/1/2020"
+output: 
+  github_document:
+    toc: true
+---
+
+# Setup
+
+## Load Packages
+
+```{r}
+if (!require("pacman")) install.packages("pacman")
+
+pacman::p_load(
+  tidyverse, 
+  haven, 
+  tidycensus
+)
+```
+
+```{r}
+v17 <- load_variables(2017, "acs5", cache = TRUE)
+v18 <- load_variables(2018, "acs5", cache = TRUE)
+
+
+View(v17)
+
+v10 <- load_variables(2010, "acs5", cache = TRUE)
+
+View(v10)
+```
+
+```{r}
+vt <- get_acs(geography = "county", 
+              variables = c(medincome = "B19013_001"), 
+              state = c("VT"), 
+              year = 2010)
+
+mean(vt$estimate)
+
+vt <- get_acs(geography = "county", 
+              variables = c(medincome = "B19013_001"), 
+              state = "VT", 
+              year = 2018)
+
+vt
+```
+
+```{r}
+state_names <-
+  state_names %>% 
+  filter(
+    !is.na(state) & state != "MH"
+  )
+
+mi <- get_acs(geography = "county", 
+              variables = c(medincome = "B19013_001"), 
+              state = state_names$state, 
+              year = 2018)
+```
+
+
+
